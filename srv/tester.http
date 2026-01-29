@@ -1,0 +1,104 @@
+### service definition
+http://localhost:4004/odata/v4/CatalogService
+
+### service meta data 
+http://localhost:4004/odata/v4/CatalogService/$metadata
+
+### GET service request
+http://localhost:4004/odata/v4/CatalogService/EmployeeSrv
+
+### GET SERVICE REQUEST FOR SINGLE EMPLOYEE
+http://localhost:4004/odata/v4/CatalogService/EmployeeSrv/02BD2137-0890-1EEA-A6C2-BB55C19787FB
+
+### post service request
+//http://localhost:4004/odata/v4/CatalogService/EmployeeSrv/02BD2137-0890-1EEA-A6C2-BB55C19787FB
+POST http://localhost:4004/odata/v4/CatalogService/EmployeeSrv
+Content-Type: application/json
+
+
+{
+      "nameFirst": "chandramouli",
+      "nameMiddle": "",
+      "nameLast": "v",
+      "nameInitials": null,
+      "sex": "F",
+      "language": "E",
+      "phoneNumber": "9560466858",
+      "email": "christiano@sony.com",
+      "loginName": "RONALDOCH",
+      "Currency_code": "USD",
+      "salaryAmount": 110962,
+      "accountNumber": "222333444",
+      "bankId": "510655",
+      "bankName": "My Bank of Antioch"
+    }
+###PATCH Single Employee data - change
+###------Take the id which was created for new employee in last call
+PATCH http://localhost:4004/odata/v4/CatalogService/EmployeeSrv/e588f73e-7e67-4764-a317-1c4bcbffe574
+Content-Type: application/json
+
+
+{
+  "Currency_code": "EUR",
+  "salaryAmount": 10000000
+}
+
+
+
+
+###DELETE Single Employee data - remove
+DELETE http://localhost:4004/odata/v4/CatalogService/EmployeeSrv/e588f73e-7e67-4764-a317-1c4bcbffe574
+###GET All purchase orders
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet
+
+
+###GET Single purchase orders
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC2C052
+
+
+###GET PO and its items with lose coupling - $expand
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC2C052?$expand=Items
+
+
+###Pagigation - load data chunk by chunk - $top , $skip
+http://localhost:4004/odata/v4/CatalogService/EmployeeSrv?$top=2&$skip=2
+
+
+###Total Count of POs
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/$count
+
+
+###Filtering data of Employee
+http://localhost:4004/odata/v4/CatalogService/EmployeeSrv?$filter=bankName eq 'My Bank of New York'
+
+
+###Filtering data of Employee - pattern filters
+http://localhost:4004/odata/v4/CatalogService/EmployeeSrv?$filter=contains(nameFirst,'Su')
+
+###Child entity filter possible with CAP based oData V4
+###Example: Get those orders where their item has value more than 3000
+http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet?$filter=Items/GROSS_AMOUNT ge 3000
+###Call my custom function - to load largest order
+http://localhost:4004/odata/v4/CatalogService/getLargestPurchaseOrder()
+
+###Call my custom action - since its instance bound we need to pass key, which order you want to boost
+POST http://localhost:4004/odata/v4/CatalogService/PurchaseOrderSet/74867AD200E41EDBA5D8B0C98DC2C052/boost
+Content-Type: application/json
+
+
+{}
+
+###Custom Implementation of entity - Read
+http://localhost:4004/odata/v4/MyService/ReadEmployeeSrv
+
+
+###Custom Implementation of entity - POST
+POST http://localhost:4004/odata/v4/MyService/InsertEmployeeSrv
+Content-Type: application/json
+
+
+{
+  "ID": "DEMO",
+  "nameFirst": "Rockfeller"
+}
+
