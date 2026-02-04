@@ -1,17 +1,29 @@
 using{ anubhav.db } from '../db/datamodel';
-service CatalogService @(path:'CatalogService') {
+service CatalogService @(path:'CatalogService',
+                        ///Authentication
+                        requires: 'authenticated-user'
+) {
 
 
     //expose my database table as a odata entity
     //No coding required to handle CRUDQ - Create, Read, Update, Delete and Query data
     //@readonly
-    entity EmployeeSrv as projection on db.master.employees;
+    entity EmployeeSrv  ///Authorization
+        @(restrict: [
+            { grant: ['READ'], to: 'Viewer', where :'bankName = $user.BankName' },
+            { grant: ['WRITE','READ'], to: 'Admin' }
+        ]
+        )as projection on db.master.employees;
     //Other entities
     entity BusinessPartnerSet as projection on db.master.businesspartner;
     entity AddressSet as projection on db.master.address;
     entity ProductSet as projection on db.master.product;
     entity PurchaseOrderSet @( odata.draft.enabled:true,
-                             Common.DefaultValuesFunction: 'getOrderDefault') as projection on db.transaction.purchaseorder{
+                             Common.DefaultValuesFunction: 'getOrderDefault',
+                             restrict: [
+            { grant: ['READ'], to: 'Viewer' },
+            { grant: ['WRITE','READ'], to: 'Admin' }
+        ]) as projection on db.transaction.purchaseorder{
         *,
         //expression
         case OVERALL_STATUS

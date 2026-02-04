@@ -1,0 +1,19 @@
+{
+    "welcomeFile": "mangepurchaseorder/webapp/",
+    "authenticationMethod": "route",
+    "sessionTimeout": 100,
+    "pluginMetadataEndpoint": "/metadata",
+    "routes": [
+      {
+        "source": "^/mangepurchaseorder/webapp/(.*)",
+        "target": "$1",
+        "localDir": "mangepurchaseorder/webapp/",
+        "authenticationType": "xsuaa"
+      },
+      {
+        "source": "^/(.*)$",
+        "destination": "srv-api",
+        "authenticationType": "xsuaa"
+      }
+    ]
+  }
